@@ -1587,7 +1587,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speedDampTime: .100000001
   portrait: {fileID: 2800000, guid: 77e55aada74de314e893bac6e5715ddc, type: 3}
-  walkSpeed: 2
+  walkSpeed: 4.25
   deadZone: 5
 --- !u!136 &13600000
 CapsuleCollider:
