@@ -18,6 +18,7 @@ public class InputController : MonoBehaviour {
 	private GameController gameController;
 	enum inputStates {CHAR_SELECTED, CHAR_DESELECTED, INPUT_BLOCKED};
 	private inputStates iState;
+	private inputStates previousState;
 
 	void Awake(){
 		cameraController = GameObject.Find("camera_main").GetComponent<CameraController>();
@@ -26,6 +27,7 @@ public class InputController : MonoBehaviour {
 		//inputBlocked = false;
 		//charSelected = false;
 		iState = inputStates.CHAR_DESELECTED;
+		previousState = inputStates.CHAR_DESELECTED;
 		cursor.SetActive(true);
 	}
 
@@ -123,7 +125,10 @@ public class InputController : MonoBehaviour {
 	}
 
 	public void BlockInput(bool t){
-		if(t) iState = inputStates.INPUT_BLOCKED;
-		else iState = inputStates.CHAR_DESELECTED;
+		if (t) {
+			previousState = iState;
+			iState = inputStates.INPUT_BLOCKED;
+		}
+		else iState = previousState;
 	}
 }

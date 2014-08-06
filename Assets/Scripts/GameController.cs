@@ -3,7 +3,8 @@ using System.Collections;
 
 public class GameController : MonoBehaviour {
 
-	public int gameState;						// Is it player turn or enemy turn or script scene or other? (0 - scene; 1 - player; 2 -enemy)
+	enum GameStates {PLAYER_TURN, OPPONENT_TURN, ACTION};
+	//public int gameState;						// Is it player turn or enemy turn or script scene or other? (0 - scene; 1 - player; 2 -enemy)
 	public float aiTimer = 3f;					// Debug stuff: timer which monitors opponent turn time;
 	public GameObject spawnObject;				//Drag object prefab to variable in inspector
 
@@ -11,18 +12,28 @@ public class GameController : MonoBehaviour {
 	private GUIController guiController;		// Reference to GUI controller
 	private GameObject selectedPlayerObject;	// Reference to selected character
 	private GameObject[] playerCharList;		// list ofplayer Characters
+	private GameObject cameraCinematic;			// Cinematic camera
+	private GameObject cameraMain;
+	private GameStates gameState;
 
 	// Use this for initialization
 	void Awake () {
-		gameState = 1;
+		gameState = GameStates.PLAYER_TURN;
+
+		// Setting up cameras: main and Cinematic
+		cameraMain = GameObject.Find ("camera_main");
+		cameraMain.camera.enabled = true;
+		cameraCinematic = GameObject.Find ("camera_cinematic");
+		cameraCinematic.camera.enabled = false;
+
+		// Getting references to GUI and Input
 		inputController = GameObject.Find("game_controller").GetComponent<InputController>();
 		guiController = GameObject.Find("camera_main").GetComponent<GUIController>();
-		//selectedPlayerObject = GameObject.Find ("char_enemy_001");
+
+		// Initializng player characters
 		playerCharList = new GameObject[2];
 		playerCharList[0] = Instantiate(spawnObject,new Vector3(-7.5f, 0f, 1.5f),Quaternion.identity) as GameObject;
-		//Debug.Log (playerCharList [0]);
 		playerCharList[0].GetComponent<CharModel>().CharacterSetup("Raven", (Texture2D) Resources.Load("Textures/Raven", typeof(Texture2D)), new Vector3(-7.5f, 0f, 1.5f));
-		//Debug.Log (playerCharList [0].GetComponent<CharModel> ().GetName ());
 		playerCharList[1] = Instantiate(spawnObject,new Vector3(-7.5f, 0f, 0.5f),Quaternion.identity) as GameObject;
 		playerCharList[1].GetComponent<CharModel>().CharacterSetup("Raider", (Texture2D) Resources.Load("Textures/raider", typeof(Texture2D)), new Vector3(-7.5f, 0f, 0.5f));
 	}
@@ -30,13 +41,23 @@ public class GameController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		switch (gameState){
-			case 1:
+			case GameStates.PLAYER_TURN:
 				break;
-			case 2:
+			case GameStates.OPPONENT_TURN:
 				// update AI
 				aiTimer -= Time.deltaTime;
 				if (aiTimer<0){
 					startPlayerTurn();
+				}
+				break;
+			case GameStates.ACTION:
+				if(selectedPlayerObject.GetComponent<CharModel>().isIdle())
+				{
+					gameState = GameStates.PLAYER_TURN;
+					cameraMain.GetComponent<CameraController>().UpdatePosition( selectedPlayerObject.GetComponent<CharModel>().GetPosition());
+					cameraMain.camera.enabled = true;
+					cameraCinematic.camera.enabled = false;
+					inputController.BlockInput (false);
 				}
 				break;
 		}
@@ -45,7 +66,7 @@ public class GameController : MonoBehaviour {
 	public void EndPlayerTurn()
 	{
 		inputController.BlockInput (true);
-		gameState = 2;
+		gameState = GameStates.OPPONENT_TURN;
 		guiController.guiState = 2;
 		//selectedPlayerObject.GetComponent<CharModel> ().ResetAP ();
 		selectedPlayerObject.GetComponent<CharModel>().Deselect();
@@ -57,7 +78,7 @@ public class GameController : MonoBehaviour {
 		selectedPlayerObject = null;
 	}
 	public void startPlayerTurn(){
-		gameState = 1;
+		gameState = GameStates.PLAYER_TURN;
 		guiController.guiState = 1;
 		inputController.BlockInput (false);
 		aiTimer=3;
@@ -83,5 +104,10 @@ public class GameController : MonoBehaviour {
 	public void MoveSelectedCharacter(Vector3 v){
 		if(selectedPlayerObject.GetComponent <CharModel> ().GetCurrentAP()>0)
 			selectedPlayerObject.GetComponent<CharModel> ().MoveTo(v);
+		inputController.BlockInput (true);
+		gameState = GameStates.ACTION;
+		cameraMain.camera.enabled = false;
+		cameraCinematic.camera.enabled = true;
+		cameraCinematic.GetComponent<CinematicCameraController> ().CinematicMovement (selectedPlayerObject);
 	}	
 }

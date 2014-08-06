@@ -80,4 +80,8 @@ public class CameraController : MonoBehaviour {
 	public Ray hitRay(){
 		return camera.ScreenPointToRay(Input.mousePosition);
 	}
+	public void UpdatePosition(Vector3 v){
+		cameraNode.transform.position = v;
+		newCameraPosition = v;
+	}
 }

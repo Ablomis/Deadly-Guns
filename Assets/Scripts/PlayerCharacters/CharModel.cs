@@ -111,5 +111,15 @@ public class CharModel : MonoBehaviour {
 		portrait = p;
 		transform.position = v;
 	}
+	public bool isIdle()
+	{
+		if (charState == States.IDLE){
+			return true;
+		}
+		return false;
+	}
+	public Vector3 GetPosition(){
+		return transform.position;
+	}
 	
 }
