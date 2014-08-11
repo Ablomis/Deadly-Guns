@@ -4,15 +4,15 @@ using System.Collections;
 public class CharModel : MonoBehaviour {
 
 	public float speedDampTime = 0.1f;  					// The damping for the speed parameter
-	public Texture2D portrait;
+	//public Texture2D portrait;
 	public float walkSpeed = 2f;
 	public float deadZone = 5f;            					// The number of degrees for which the rotation isn't controlled by Mecanim.
-
+	public MercProfile profile;
 	
 	private bool selected;									// Tells us if the char is selected
 	private GameObject selector;							// Mesh for player selection
 	private int currentAP;
-	private string name;									// Character name	
+	//private string name;									// Character name	
 	private NavMeshAgent nav;                               // Reference to the nav mesh agent.
 	private float runSpeed = 0.7f;
 	enum States {IDLE, WALKING, RUNNING, SHOOTING };
@@ -68,11 +68,11 @@ public class CharModel : MonoBehaviour {
 	}
 	public Texture2D GetPortrait()
 	{
-		return portrait;
+		return profile.GetPortrait();
 	}
 	public string GetName()
 	{
-		return name;
+		return profile.GetName();
 	}
 	public void MoveTo(Vector3 destination){
 		//if(currentAP > 0){
@@ -105,10 +105,9 @@ public class CharModel : MonoBehaviour {
 	{
 		currentAP = 2;
 	}
-	public void CharacterSetup(string n, Texture2D p, Vector3 v)
+	public void CharacterSetup(string n, int a, Texture2D p, Vector3 v)
 	{
-		name = n;
-		portrait = p;
+		profile = new MercProfile(n,a,p);
 		transform.position = v;
 	}
 	public bool isIdle()

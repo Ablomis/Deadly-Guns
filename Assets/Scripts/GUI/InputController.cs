@@ -8,7 +8,6 @@ public class InputController : MonoBehaviour {
 
 	private CameraController cameraController;						// Get reference to a camera controller
 	private HashIDs hash;
-	private GameObject cursor;
 	private float gridXdef = 1.5f;
 	private float gridZdef = -1.5f;
 	private float gridXcenterDef = 2.0f;
@@ -16,6 +15,7 @@ public class InputController : MonoBehaviour {
 	private CharModel charModel;
 	private bool charSelected;
 	private GameController gameController;
+	private GUIController guiController;
 	enum inputStates {CHAR_SELECTED, CHAR_DESELECTED, INPUT_BLOCKED};
 	private inputStates iState;
 	private inputStates previousState;
@@ -23,12 +23,11 @@ public class InputController : MonoBehaviour {
 	void Awake(){
 		cameraController = GameObject.Find("camera_main").GetComponent<CameraController>();
 		gameController = GameObject.Find("game_controller").GetComponent<GameController>();
-		cursor = GameObject.Find("mouse_cursor_move");
+		guiController = GameObject.Find("camera_main").GetComponent<GUIController>();
 		//inputBlocked = false;
 		//charSelected = false;
 		iState = inputStates.CHAR_DESELECTED;
 		previousState = inputStates.CHAR_DESELECTED;
-		cursor.SetActive(true);
 	}
 
 	// Update is called once per frame
@@ -64,21 +63,11 @@ public class InputController : MonoBehaviour {
 
 		}
 		else {
-			cursor.SetActive(false);
+			//cursor.SetActive(false);
 		}
 	}
 
-	Vector3 getGridCenter(Vector3 p){
-		Vector3 gridCenter; 
-		gridCenter.x = 2.5f - Mathf.Ceil (Mathf.Abs(p.x - gridXdef));
-		gridCenter.z = Mathf.Ceil (p.z - gridZdef) - 2.5f;
-		gridCenter.y = 0.5f;
-		//Debug.Log(p.x);
-		//Debug.Log(gridCenter.x);
-		//Debug.Log(gridCenter.y);
 
-		return gridCenter;
-	}
 	void MouseUpdate()
 	{
 		//cursor.SetActive(true);
@@ -90,13 +79,17 @@ public class InputController : MonoBehaviour {
 			//Debug.Log(hit.transform.tag);
 			if(hit.transform.tag == "Player")
 			{
-				cursor.SetActive(false);
+				guiController.SetCursorSelect();
 			}
 			else if((hit.transform.tag == "Floor") && (iState==inputStates.CHAR_SELECTED))
 			{
 				//cursor.SetActive(false);
-				cursor.transform.position = getGridCenter(hit.point);
-				cursor.SetActive(true);
+				guiController.SetCursorMove(getGridCenter(hit.point));
+			}
+			if(hit.transform.tag == "Enemy")
+			{
+				guiController.SetCursorAim(gameController.GetChanceToHit(hit.transform));
+				//Debug.Log(gameController.GetChanceToHit(hit.transform).ToString());
 			}
 		}
 
@@ -130,5 +123,17 @@ public class InputController : MonoBehaviour {
 			iState = inputStates.INPUT_BLOCKED;
 		}
 		else iState = previousState;
+	}
+
+	Vector3 getGridCenter(Vector3 p){
+		Vector3 gridCenter; 
+		gridCenter.x = 2.5f - Mathf.Ceil (Mathf.Abs(p.x - gridXdef));
+		gridCenter.z = Mathf.Ceil (p.z - gridZdef) - 2.5f;
+		gridCenter.y = 0.5f;
+		//Debug.Log(p.x);
+		//Debug.Log(gridCenter.x);
+		//Debug.Log(gridCenter.y);
+		
+		return gridCenter;
 	}
 }
