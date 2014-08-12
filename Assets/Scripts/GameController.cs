@@ -51,13 +51,17 @@ public class GameController : MonoBehaviour {
 				}
 				break;
 			case GameStates.ACTION:
+				//inputController.BlockInput (true);
 				if(selectedPlayerObject.GetComponent<CharModel>().isIdle())
 				{
 					gameState = GameStates.PLAYER_TURN;
-					cameraMain.GetComponent<CameraController>().UpdatePosition( selectedPlayerObject.GetComponent<CharModel>().GetPosition());
-					cameraMain.camera.enabled = true;
-					cameraCinematic.camera.enabled = false;
+					//cameraMain.GetComponent<CameraController>().UpdatePosition( selectedPlayerObject.GetComponent<CharModel>().GetPosition());
+					//cameraMain.camera.enabled = true;
+					//cameraCinematic.camera.enabled = false;
 					inputController.BlockInput (false);
+				}
+				else if (selectedPlayerObject.GetComponent<CharModel>().GetState() == 1){
+					cameraMain.GetComponent<CameraController>().Move(selectedPlayerObject.transform.position);
 				}
 				break;
 		}
@@ -114,17 +118,26 @@ public class GameController : MonoBehaviour {
 
 	// Moves selected character at required direction
 	public void MoveSelectedCharacter(Vector3 v){
-		if(selectedPlayerObject.GetComponent <CharModel> ().GetCurrentAP()>0)
+		if(selectedPlayerObject.GetComponent <CharModel> ().GetCurrentAP()>0){
 			selectedPlayerObject.GetComponent<CharModel> ().MoveTo(v);
-		inputController.BlockInput (true);
-		gameState = GameStates.ACTION;
-		cameraMain.camera.enabled = false;
-		cameraCinematic.camera.enabled = true;
-		cameraCinematic.GetComponent<CinematicCameraController> ().CinematicMovement (selectedPlayerObject);
+			inputController.BlockInput (true);
+			gameState = GameStates.ACTION;
+		}
+		//cameraMain.camera.enabled = false;
+		//cameraCinematic.camera.enabled = true;
+		//cameraCinematic.GetComponent<CinematicCameraController> ().CinematicMovement (selectedPlayerObject);
 	}
 
 	// Calculates chance to hit for a specific character and target
 	public int GetChanceToHit(Transform t){
 		return selectedPlayerObject.GetComponent<CharModel> ().profile.GetAimingSkill ();
+	}
+
+	public void ShootWeaponAt(Transform t){
+		if(selectedPlayerObject.GetComponent <CharModel> ().GetCurrentAP()>0){
+			gameState = GameStates.ACTION;
+			selectedPlayerObject.GetComponent<CharModel> ().ShootAt (t);
+			inputController.BlockInput (true);
+		}
 	}
 }

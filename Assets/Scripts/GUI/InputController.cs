@@ -24,8 +24,7 @@ public class InputController : MonoBehaviour {
 		cameraController = GameObject.Find("camera_main").GetComponent<CameraController>();
 		gameController = GameObject.Find("game_controller").GetComponent<GameController>();
 		guiController = GameObject.Find("camera_main").GetComponent<GUIController>();
-		//inputBlocked = false;
-		//charSelected = false;
+
 		iState = inputStates.CHAR_DESELECTED;
 		previousState = inputStates.CHAR_DESELECTED;
 	}
@@ -90,6 +89,9 @@ public class InputController : MonoBehaviour {
 			{
 				guiController.SetCursorAim(gameController.GetChanceToHit(hit.transform));
 				//Debug.Log(gameController.GetChanceToHit(hit.transform).ToString());
+				if(Input.GetMouseButtonDown(1)){
+					gameController.ShootWeaponAt(hit.transform);
+				}
 			}
 		}
 

@@ -17,6 +17,7 @@ public class CameraController : MonoBehaviour {
 	void Awake () {
 		cameraNode = transform.parent.gameObject;
 		newCameraPosition = cameraNode.transform.position;
+		newCameraRotation = cameraNode.transform.rotation;
 	}
 	
 	// Update is called once per frame
@@ -24,6 +25,9 @@ public class CameraController : MonoBehaviour {
 		if (isBusy) {
 			cameraNode.transform.rotation = Quaternion.RotateTowards(cameraNode.transform.rotation, newCameraRotation, rotationSpeed * Time.deltaTime);
 			cameraNode.transform.position = Vector3.MoveTowards(cameraNode.transform.position, newCameraPosition, Time.deltaTime * cameraSpeed);
+			/*if (Mathf.Abs(cameraNode.transform.position.y - newCameraPosition.y)<(Time.deltaTime * cameraSpeed))
+				cameraNode.transform.position = newCameraPosition;*/
+			Debug.Log ((cameraNode.transform.rotation == newCameraRotation));
 			if((cameraNode.transform.rotation == newCameraRotation) && (cameraNode.transform.position == newCameraPosition)) {
 				isBusy = false;
 			}
@@ -83,5 +87,10 @@ public class CameraController : MonoBehaviour {
 	public void UpdatePosition(Vector3 v){
 		cameraNode.transform.position = v;
 		newCameraPosition = v;
+	}
+	public void Move(Vector3 v){
+		cameraNode.transform.position = Vector3.MoveTowards(cameraNode.transform.position, v, Time.deltaTime * cameraSpeed);
+		newCameraPosition = cameraNode.transform.position;
+		newCameraRotation = cameraNode.transform.rotation;
 	}
 }

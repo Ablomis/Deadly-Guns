@@ -54,7 +54,9 @@
      <Compile Include="Assets\Scripts\GUI\ScreenFader.cs" />
      <Compile Include="Assets\Scripts\GameController.cs" />
      <Compile Include="Assets\Scripts\PlayerCharacters\CharModel.cs" />
+     <Compile Include="Assets\Scripts\PlayerCharacters\MercProfile.cs" />
      <Compile Include="Assets\Scripts\Unapplied\HashIDs.cs" />
+     <Compile Include="Assets\Scripts\Weapon.cs" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_BloomAndFlares\BlendOneOne.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\NoiseEffectShaderRGB.shader" />
      <None Include="Assets\Standard Assets\Image Effects (Pro Only)\_Sources\Shaders\_DepthOfField\SeparableWeightedBlurDof34.shader" />

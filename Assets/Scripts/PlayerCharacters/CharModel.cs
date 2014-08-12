@@ -8,16 +8,20 @@ public class CharModel : MonoBehaviour {
 	public float walkSpeed = 2f;
 	public float deadZone = 5f;            					// The number of degrees for which the rotation isn't controlled by Mecanim.
 	public MercProfile profile;
+	public GameObject item1;
+	public GameObject gun;
 	
 	private bool selected;									// Tells us if the char is selected
 	private GameObject selector;							// Mesh for player selection
 	private int currentAP;
-	//private string name;									// Character name	
+
 	private NavMeshAgent nav;                               // Reference to the nav mesh agent.
 	private float runSpeed = 0.7f;
-	enum States {IDLE, WALKING, RUNNING, SHOOTING };
+	public enum States {IDLE, WALKING, RUNNING, SHOOTING };
 	private States charState;
-	private Animator anim; 
+	private Animator anim;
+	private Transform target;
+	private bool shooting;
 	
 	// Update is called once per frame
 	void Awake () {
@@ -28,6 +32,9 @@ public class CharModel : MonoBehaviour {
 		selector.SetActive (false);
 		nav = GetComponent<NavMeshAgent>();
 		currentAP = 2;
+		//item1 = transform.Find("prop_sciFiGun_low").gameObject;
+		//Debug.Log ("434");
+		transform.GetComponent<Weapon>().SetWeapon("Pistol", 15, 25, 15, 25, 90);
 
 
 		// We need to convert the angle for the deadzone from degrees to radians.
@@ -44,6 +51,20 @@ public class CharModel : MonoBehaviour {
 				Walking ();
 				if (nav.destination == transform.position)
 					Stop();
+				break;
+			case States.SHOOTING:
+				transform.LookAt(target.position);
+				//Debug.Log(anim.GetFloat("Shot"));
+				if ((anim.GetFloat("Shot")>0.05f) && (!transform.GetComponent<Weapon>().shooting)){
+					transform.GetComponent<Weapon>().Shoot(target.transform.position);
+					//Debug.Log("Bang!");
+				}
+				else if ((anim.GetFloat("Shot")<0.05f) && (transform.GetComponent<Weapon>().shooting)){
+					transform.GetComponent<Weapon>().Idle();
+					charState = States.IDLE;
+					anim.SetBool("Shooting", false);
+					Debug.Log("Idle!");
+				}
 				break;
 				
 		}
@@ -90,6 +111,7 @@ public class CharModel : MonoBehaviour {
 		//anim.SetFloat("Speed", walkSpeed);
 	
 	}
+
 	public void Stop(){
 		nav.speed = 0f;
 		nav.Stop ();
@@ -101,15 +123,18 @@ public class CharModel : MonoBehaviour {
 	{
 		return currentAP;
 	}
+
 	public void ResetAP()
 	{
 		currentAP = 2;
 	}
+
 	public void CharacterSetup(string n, int a, Texture2D p, Vector3 v)
 	{
 		profile = new MercProfile(n,a,p);
 		transform.position = v;
 	}
+
 	public bool isIdle()
 	{
 		if (charState == States.IDLE){
@@ -117,8 +142,20 @@ public class CharModel : MonoBehaviour {
 		}
 		return false;
 	}
+
 	public Vector3 GetPosition(){
 		return transform.position;
+	}
+
+	public int GetState(){
+		return (int)charState;
+	}
+	public void ShootAt(Transform t){
+		charState = States.SHOOTING;
+		target = t;
+		// ... set the animator parameter to false.
+		anim.SetBool("Shooting", true);
+		currentAP -= 1;
 	}
 	
 }
