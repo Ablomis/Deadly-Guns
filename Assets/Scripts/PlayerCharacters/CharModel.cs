@@ -34,7 +34,7 @@ public class CharModel : MonoBehaviour {
 		currentAP = 2;
 		//item1 = transform.Find("prop_sciFiGun_low").gameObject;
 		//Debug.Log ("434");
-		transform.GetComponent<Weapon>().SetWeapon("Pistol", 15, 25, 15, 25, 90);
+		transform.GetComponent<Weapon>().SetWeapon("Pistol", 115, 125, 15, 25, 90);
 
 
 		// We need to convert the angle for the deadzone from degrees to radians.
@@ -56,14 +56,15 @@ public class CharModel : MonoBehaviour {
 				transform.LookAt(target.position);
 				//Debug.Log(anim.GetFloat("Shot"));
 				if ((anim.GetFloat("Shot")>0.05f) && (!transform.GetComponent<Weapon>().shooting)){
-					transform.GetComponent<Weapon>().Shoot(target.transform.position);
+					int d = transform.GetComponent<Weapon>().Shoot(target.transform.position);
+					target.transform.GetComponent<Enemy>().TakeHit(d);
 					//Debug.Log("Bang!");
 				}
 				else if ((anim.GetFloat("Shot")<0.05f) && (transform.GetComponent<Weapon>().shooting)){
 					transform.GetComponent<Weapon>().Idle();
 					charState = States.IDLE;
 					anim.SetBool("Shooting", false);
-					Debug.Log("Idle!");
+					//Debug.Log("Idle!");
 				}
 				break;
 				
