@@ -14,11 +14,13 @@ public class GameController : MonoBehaviour {
 	private GameObject[] playerCharList;		// list ofplayer Characters
 	private GameObject cameraCinematic;			// Cinematic camera
 	private GameObject cameraMain;
+	private GameObject dummy_target;
 	private GameStates gameState;
 
 	// Use this for initialization
 	void Awake () {
 		gameState = GameStates.PLAYER_TURN;
+		dummy_target = GameObject.Find ("DummyTarget");
 
 		// Setting up cameras: main and Cinematic
 		cameraMain = GameObject.Find ("camera_main");
@@ -130,13 +132,33 @@ public class GameController : MonoBehaviour {
 
 	// Calculates chance to hit for a specific character and target
 	public int GetChanceToHit(Transform t){
-		return selectedPlayerObject.GetComponent<CharModel> ().profile.GetAimingSkill ();
+		float skill = selectedPlayerObject.GetComponent<CharModel> ().profile.GetAimingSkill ();
+		float weapon_accuracy = selectedPlayerObject.GetComponent<Weapon> ().GetAccuracy ();
+		float weapon_range = selectedPlayerObject.GetComponent<Weapon> ().GetRange ();
+		float distance = Vector3.Distance (t.transform.position, selectedPlayerObject.transform.position);
+		Debug.Log (distance.ToString());
+		//Debug.Log (weapon_accuracy.ToString ());
+
+		float f = (skill / 100f * weapon_accuracy / 100f * weapon_range/distance)*100;
+		int chance = Mathf.FloorToInt(f);
+		if (chance > 100)
+						chance = 100;
+		return chance;
 	}
 
-	public void ShootWeaponAt(Transform t){
+	public void ShootWeaponAt(Transform t, int cth){
 		if(selectedPlayerObject.GetComponent <CharModel> ().GetCurrentAP()>0){
 			gameState = GameStates.ACTION;
-			selectedPlayerObject.GetComponent<CharModel> ().ShootAt (t);
+			int r = Random.Range(0,100);
+			if (r<cth)
+				selectedPlayerObject.GetComponent<CharModel> ().ShootAt (t);
+			else {
+				float x = t.position.x + Random.Range(0,200)/100f;
+				float y = t.position.y + Random.Range(0,200)/100f;
+				float z = t.position.z + Random.Range(0,200)/100f;
+				dummy_target.transform.position = new Vector3(x,y,z);
+				selectedPlayerObject.GetComponent<CharModel> ().ShootAt (dummy_target.transform);
+			}
 			inputController.BlockInput (true);
 		}
 	}

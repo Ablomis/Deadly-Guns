@@ -7,7 +7,7 @@ public class CharModel : MonoBehaviour {
 	//public Texture2D portrait;
 	public float walkSpeed = 2f;
 	public float deadZone = 5f;            					// The number of degrees for which the rotation isn't controlled by Mecanim.
-	public MercProfile profile;
+	public CharProfile profile;
 	public GameObject item1;
 	public GameObject gun;
 	
@@ -34,7 +34,7 @@ public class CharModel : MonoBehaviour {
 		currentAP = 2;
 		//item1 = transform.Find("prop_sciFiGun_low").gameObject;
 		//Debug.Log ("434");
-		transform.GetComponent<Weapon>().SetWeapon("Pistol", 115, 125, 15, 25, 90);
+		transform.GetComponent<Weapon>().SetWeapon("Pistol", 115, 125, 15, 25, 30);
 
 
 		// We need to convert the angle for the deadzone from degrees to radians.
@@ -132,7 +132,7 @@ public class CharModel : MonoBehaviour {
 
 	public void CharacterSetup(string n, int a, Texture2D p, Vector3 v)
 	{
-		profile = new MercProfile(n,a,p);
+		profile = new CharProfile(n,a,p);
 		transform.position = v;
 	}
 
@@ -151,12 +151,25 @@ public class CharModel : MonoBehaviour {
 	public int GetState(){
 		return (int)charState;
 	}
+
 	public void ShootAt(Transform t){
 		charState = States.SHOOTING;
 		target = t;
 		// ... set the animator parameter to false.
 		anim.SetBool("Shooting", true);
 		currentAP -= 1;
+	}
+
+	public void ShootMiss(Transform t){
+		charState = States.SHOOTING;
+		target = t;
+		// ... set the animator parameter to false.
+		anim.SetBool("Shooting", true);
+		currentAP -= 1;
+	}
+
+	public void GetWeaponAccuracy(){
+		
 	}
 	
 }

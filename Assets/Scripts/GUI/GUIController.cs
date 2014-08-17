@@ -82,7 +82,7 @@ public class GUIController : MonoBehaviour {
 		GUI.DrawTexture(new Rect(mouse.x - (32 / 2), mouse.y - (32 / 2), 32, 32), cursorTexture);
 
 		if (drawCtH)
-			GUI.Label (new Rect(mouse.x - 25, mouse.y - 25, 20, 20), valueCtH.ToString());
+			GUI.Label (new Rect(mouse.x - 50, mouse.y - 30, 30, 20), valueCtH.ToString());
 	}
 	public void SetCursorAim(int chance)
 	{

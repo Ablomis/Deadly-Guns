@@ -87,10 +87,11 @@ public class InputController : MonoBehaviour {
 			}
 			if(hit.transform.tag == "Enemy")
 			{
-				guiController.SetCursorAim(gameController.GetChanceToHit(hit.transform));
+				int cth = gameController.GetChanceToHit(hit.transform);
+				guiController.SetCursorAim(cth);
 				//Debug.Log(gameController.GetChanceToHit(hit.transform).ToString());
 				if(Input.GetMouseButtonDown(1)){
-					gameController.ShootWeaponAt(hit.transform);
+					gameController.ShootWeaponAt(hit.transform, cth);
 				}
 			}
 		}

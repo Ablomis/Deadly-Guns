@@ -89,7 +89,7 @@ public class CameraController : MonoBehaviour {
 		newCameraPosition = v;
 	}
 	public void Move(Vector3 v){
-		cameraNode.transform.position = Vector3.MoveTowards(cameraNode.transform.position, v, Time.deltaTime * cameraSpeed);
+		cameraNode.transform.position = Vector3.MoveTowards(cameraNode.transform.position, cameraNode.transform.position, Time.deltaTime * cameraSpeed);
 		newCameraPosition = cameraNode.transform.position;
 		newCameraRotation = cameraNode.transform.rotation;
 	}

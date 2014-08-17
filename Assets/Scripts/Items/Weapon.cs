@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Weapon : MonoBehaviour {
+public class Weapon : Item {
 
 	public AudioClip shotClip;                          // An audio clip to play when a shot happens.
 	public float flashIntensity = 3f;                   // The intensity of the light when the shot happens.
@@ -73,6 +73,14 @@ public class Weapon : MonoBehaviour {
 		laserShotLine.enabled = false;
 	}
 
+	public int GetAccuracy(){
+		return accuracy;
+	}
+
+	public int GetRange(){
+		return range;
+	}
+
 	void ShotEffects (Vector3 target)
 	{
 
@@ -91,4 +99,5 @@ public class Weapon : MonoBehaviour {
 		// Play the gun shot clip at the position of the muzzle flare.
 		AudioSource.PlayClipAtPoint(shotClip, laserShotLight.transform.position);
 	}
+	
 }
