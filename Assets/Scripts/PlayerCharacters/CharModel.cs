@@ -22,6 +22,8 @@ public class CharModel : MonoBehaviour {
 	private Animator anim;
 	private Transform target;
 	private bool shooting;
+	private GameObject[] inventory;
+	private Item active_item;
 	
 	// Update is called once per frame
 	void Awake () {
@@ -34,8 +36,8 @@ public class CharModel : MonoBehaviour {
 		currentAP = 2;
 		//item1 = transform.Find("prop_sciFiGun_low").gameObject;
 		//Debug.Log ("434");
-		transform.GetComponent<Weapon>().SetWeapon("Pistol", 115, 125, 15, 25, 30);
-
+		transform.GetComponent<Weapon>().SetItem("Pistol", 115, 125, 15, 25, 30,"icon_gun" );
+		inventory = new GameObject[1];
 
 		// We need to convert the angle for the deadzone from degrees to radians.
 		deadZone *= Mathf.Deg2Rad;
@@ -170,6 +172,10 @@ public class CharModel : MonoBehaviour {
 
 	public void GetWeaponAccuracy(){
 		
+	}
+
+	public Item GetActiveItem(){
+		return active_item;
 	}
 	
 }

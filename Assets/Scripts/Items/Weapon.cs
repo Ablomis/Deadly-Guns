@@ -41,13 +41,14 @@ public class Weapon : Item {
 	}
 
 	// Use this for initialization
-	public void SetWeapon (string t, int d, int d2, int m, int r, int a) {
+	public void SetItem (string t, int d, int d2, int m, int r, int a, string s) {
 		type = t;
 		min_damage = d;
 		max_damage = d2;
 		maneuverability = m;
 		range = r;
 		accuracy = a;
+		SetIcon (s);
 	}
 
 	public int MakeShot (int skill){
