@@ -78,7 +78,7 @@ public class GUIController : MonoBehaviour {
 			GUI.Label (new Rect (22,Screen.height-140,76,87), gameController.GetSelectedPlayerObject().GetComponent<CharModel>().GetPortrait());
 			GUI.Label (new Rect (30,Screen.height-40,76,87), "AP Left " + gameController.GetSelectedPlayerObject().GetComponent<CharModel>().GetCurrentAP().ToString());
 			//GUI.Box(new Rect(140,Screen.height-60,120,70));
-			GUI.Box (new Rect (150,Screen.height-60,100,50), gameController.GetSelectedPlayerObject().GetComponent<Weapon>().GetIcon());
+			GUI.Box (new Rect (150,Screen.height-60,100,50), gameController.GetSelectedPlayerObject().GetComponent<CharModel>().GetActiveItem().GetComponent<Weapon>().GetIcon());
 		}
 		//if (renderCursor)
 		GUI.DrawTexture(new Rect(mouse.x - (32 / 2), mouse.y - (32 / 2), 32, 32), cursorTexture);

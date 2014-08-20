@@ -23,7 +23,7 @@ public class CharModel : MonoBehaviour {
 	private Transform target;
 	private bool shooting;
 	private GameObject[] inventory;
-	private Item active_item;
+	private GameObject active_item;
 	
 	// Update is called once per frame
 	void Awake () {
@@ -36,8 +36,8 @@ public class CharModel : MonoBehaviour {
 		currentAP = 2;
 		//item1 = transform.Find("prop_sciFiGun_low").gameObject;
 		//Debug.Log ("434");
-		transform.GetComponent<Weapon>().SetItem("Pistol", 115, 125, 15, 25, 30,"icon_gun" );
-		inventory = new GameObject[1];
+		//transform.GetComponent<Weapon>().SetItem("Pistol", 115, 125, 15, 25, 30,"icon_gun" );
+		inventory = new GameObject[2];
 
 		// We need to convert the angle for the deadzone from degrees to radians.
 		deadZone *= Mathf.Deg2Rad;
@@ -57,13 +57,13 @@ public class CharModel : MonoBehaviour {
 			case States.SHOOTING:
 				transform.LookAt(target.position);
 				//Debug.Log(anim.GetFloat("Shot"));
-				if ((anim.GetFloat("Shot")>0.05f) && (!transform.GetComponent<Weapon>().shooting)){
-					int d = transform.GetComponent<Weapon>().Shoot(target.transform.position);
+				if ((anim.GetFloat("Shot")>0.05f) && (!active_item.GetComponent<Weapon>().shooting)){
+					int d = active_item.GetComponent<Weapon>().Shoot(target.transform.position);
 					target.transform.GetComponent<Enemy>().TakeHit(d);
 					//Debug.Log("Bang!");
 				}
-				else if ((anim.GetFloat("Shot")<0.05f) && (transform.GetComponent<Weapon>().shooting)){
-					transform.GetComponent<Weapon>().Idle();
+				else if ((anim.GetFloat("Shot")<0.05f) && (active_item.GetComponent<Weapon>().shooting)){
+					active_item.GetComponent<Weapon>().Idle();
 					charState = States.IDLE;
 					anim.SetBool("Shooting", false);
 					//Debug.Log("Idle!");
@@ -171,11 +171,33 @@ public class CharModel : MonoBehaviour {
 	}
 
 	public void GetWeaponAccuracy(){
-		
+
 	}
 
-	public Item GetActiveItem(){
+	public GameObject GetActiveItem(){
 		return active_item;
+	}
+
+	public void AddItemInventory(GameObject o, int index){
+		inventory [index] = o;
+		//Debug.Log(inventory [index].transform);
+		inventory [index].transform.parent = FindTransform (transform, "char_robotGuard_RightHand");
+		Debug.Log (inventory [index].transform.parent);
+		inventory[index].transform.localPosition = new Vector3 (0.1f, 0.021f, -0.02f);
+		inventory[index].transform.localRotation = Quaternion.Euler(-28f, 101.4f, -96.2f);
+		inventory[index].GetComponent<Weapon>().SetItem ("Pistol", 115, 125, 15, 25, 30,"icon_gun" );
+		active_item = inventory [index];
+	}
+
+	public static Transform FindTransform(Transform parent, string name)
+	{
+		if (parent.name.Equals(name)) return parent;
+		foreach (Transform child in parent)
+		{
+			Transform result = FindTransform(child, name);
+			if (result != null) return result;
+		}
+		return null;
 	}
 	
 }

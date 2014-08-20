@@ -7,6 +7,7 @@ public class GameController : MonoBehaviour {
 	//public int gameState;						// Is it player turn or enemy turn or script scene or other? (0 - scene; 1 - player; 2 -enemy)
 	public float aiTimer = 3f;					// Debug stuff: timer which monitors opponent turn time;
 	public GameObject spawnObject;				//Drag object prefab to variable in inspector
+	public GameObject weapon;
 
 	private InputController inputController;	// Reference to input controller
 	private GUIController guiController;		// Reference to GUI controller
@@ -38,6 +39,13 @@ public class GameController : MonoBehaviour {
 		playerCharList[0].GetComponent<CharModel>().CharacterSetup("Raven", 90, (Texture2D) Resources.Load("Textures/Raven", typeof(Texture2D)), new Vector3(-7.5f, 0f, 1.5f));
 		playerCharList[1] = Instantiate(spawnObject,new Vector3(-7.5f, 0f, 0.5f),Quaternion.identity) as GameObject;
 		playerCharList[1].GetComponent<CharModel>().CharacterSetup("Raider", 88, (Texture2D) Resources.Load("Textures/raider", typeof(Texture2D)), new Vector3(-7.5f, 0f, 0.5f));
+		for (int i=0; i<=1; i++){
+			GameObject g =  Instantiate(weapon) as GameObject;
+			//Debug.Log(g.transform);
+			playerCharList[i].GetComponent<CharModel>().AddItemInventory(g, 0);
+			//playerCharList[i].transform.parent = playerCharList[i].transform.FindChild("char_robotGuard_RightHand");
+			//playerCharList[i].transform.localPosition = new Vector3 (0.1f, 0.021f, -0.02f);
+		}
 	}
 	
 	// Update is called once per frame
@@ -133,16 +141,17 @@ public class GameController : MonoBehaviour {
 	// Calculates chance to hit for a specific character and target
 	public int GetChanceToHit(Transform t){
 		float skill = selectedPlayerObject.GetComponent<CharModel> ().profile.GetAimingSkill ();
-		float weapon_accuracy = selectedPlayerObject.GetComponent<Weapon> ().GetAccuracy ();
-		float weapon_range = selectedPlayerObject.GetComponent<Weapon> ().GetRange ();
+		float weapon_accuracy = selectedPlayerObject.GetComponent<CharModel>().GetActiveItem().GetComponent<Weapon> ().GetAccuracy ();
+		float weapon_range = selectedPlayerObject.GetComponent<CharModel>().GetActiveItem().GetComponent<Weapon> ().GetRange ();
 		float distance = Vector3.Distance (t.transform.position, selectedPlayerObject.transform.position);
-		Debug.Log (distance.ToString());
-		//Debug.Log (weapon_accuracy.ToString ());
+		//Debug.Log (distance.ToString());
+
 
 		float f = (skill / 100f * weapon_accuracy / 100f * weapon_range/distance)*100;
 		int chance = Mathf.FloorToInt(f);
 		if (chance > 100)
 						chance = 100;
+		Debug.Log (chance.ToString ());
 		return chance;
 	}
 

@@ -7,6 +7,7 @@ public class Item : MonoBehaviour {
 	private int size;
 	private Texture2D icon;
 	private int cost;
+	//private GameObject gameObject;
 
 	// Update is called once per frame
 	void Update () {
